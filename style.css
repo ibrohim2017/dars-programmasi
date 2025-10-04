@@ -1,0 +1,38 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: sans-serif;
+}
+
+
+:root {
+    --green: #40a463;
+    --dak: #2b2525;
+    --rak: #1b1818;
+    --blue: #5252b2;
+}
+
+.hedaer {
+    padding-top: 150px;
+    width: 250px;
+    height: 952px;
+    background-color: var(--blue);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    height: 5vh;
+    width: 250px;
+    background-color: #1b1818;
+}
+
+.nav-link:hover {
+    background-color: #2b2525;
+}
+
+a {
+    color: #ffffff;
+}

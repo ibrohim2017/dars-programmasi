@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ta’lim Sayti SPA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex h-screen bg-gray-100">
+
+    <!-- CHAP NAVIGATION -->
+    <nav class="w-64 bg-blue-800 text-white flex flex-col p-6">
+        <h1 class="text-2xl font-bold mb-10 text-center">📚 Ta’lim</h1>
+        <ul class="space-y-4">
+            <li><button onclick="showSection('uy')"
+                    class="w-full text-left block px-3 py-2 rounded hover:bg-blue-600">🏠 Uy</button></li>
+            <li><button onclick="showSection('faollar')"
+                    class="w-full text-left block px-3 py-2 rounded hover:bg-blue-600">⭐ Faollar</button></li>
+            <li><button onclick="showSection('kitoblar')"
+                    class="w-full text-left block px-3 py-2 rounded hover:bg-blue-600">📚 Kitoblar</button></li>
+            <li><button onclick="showSection('ai')"
+                    class="w-full text-left block px-3 py-2 rounded hover:bg-blue-600">🤖 AI</button></li>
+            <li><button onclick="showSection('testlar')"
+                    class="w-full text-left block px-3 py-2 rounded hover:bg-blue-600">📝 Testlar</button></li>
+            <li><button onclick="showSection('admin')"
+                    class="w-full text-left block px-3 py-2 rounded hover:bg-blue-600">🔐 Admin</button></li>
+        </ul>
+    </nav>
+
+    <!-- O‘NG TARAF KONTENT -->
+    <main class="flex-1 p-6 overflow-y-auto">
+
+        <!-- UY -->
+        <section id="uy" class="section">
+            <h2 class="text-3xl font-bold mb-4">Uy sahifasi</h2>
+            <p class="text-gray-700 text-lg">Ta’lim platformangizga xush kelibsiz! Chap menyudan bo‘lim tanlang.</p>
+        </section>
+
+        <!-- FAOLLAR -->
+        <section id="faollar" class="section hidden">
+            <h2 class="text-3xl font-bold mb-4">⭐ Faollar</h2>
+            <form id="faolForm" class="mb-6 bg-white p-4 rounded shadow">
+                <div class="grid grid-cols-3 gap-4 mb-3">
+                    <input type="text" id="darsNomi" placeholder="Dars nomi" class="border p-2 rounded">
+                    <input type="number" id="ball" placeholder="Ball (0–100)" class="border p-2 rounded">
+                    <select id="holat" class="border p-2 rounded">
+                        <option>Faol</option>
+                        <option>Yaxshi</option>
+                        <option>Qoniqarli</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">Qo‘shish</button>
+                <button type="button" onclick="clearFaollar()"
+                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 ml-2">Tozalash</button>
+            </form>
+            <div id="faolList" class="space-y-3"></div>
+        </section>
+
+        <!-- KITOBLAR -->
+        <section id="kitoblar" class="section hidden flex gap-6">
+
+            <!-- Chap taraf: kitoblar kartalari -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex-1" id="kitobGrid"></div>
+
+            <!-- Ong taraf: darslar -->
+            <div class="flex-1 bg-white p-4 rounded shadow h-full overflow-y-auto" id="darslarBox">
+                <p class="text-gray-500">Kitob tanlang, darslar shu yerda chiqadi...</p>
+            </div>
+
+        </section>
+
+        <!-- AI / Sun’iy intellekt -->
+        <section id="ai" class="section hidden">
+            <h2 class="text-3xl font-bold mb-4">🤖 Sun’iy Intellekt</h2>
+            <div class="bg-white p-4 rounded shadow h-96 flex flex-col">
+                <div id="chatBox" class="flex-1 overflow-y-auto mb-3 border p-2 rounded bg-gray-50"></div>
+                <div class="flex gap-2">
+                    <input type="text" id="aiInput" placeholder="Savol yozing..." class="flex-1 border p-2 rounded">
+                    <button onclick="sendMessage()"
+                        class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">Yuborish</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTLAR / O‘YIN -->
+        <section id="testlar" class="section hidden">
+            <h2 class="text-3xl font-bold mb-4">📝 Testlar</h2>
+            <div class="bg-white p-4 rounded shadow">
+                <p class="mb-4">HTML bo‘yicha test:</p>
+                <div id="testBox"></div>
+                <button id="submitTest" class="mt-3 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800">Testni
+                    yakunlash</button>
+            </div>
+        </section>
+
+        <!-- ADMIN -->
+        <section id="admin" class="section hidden">
+            <h2 class="text-3xl font-bold mb-4">🔐 Admin Panel</h2>
+            <div id="adminLogin" class="bg-white p-4 rounded shadow max-w-sm">
+                <input type="password" id="adminPass" placeholder="Parol kiriting"
+                    class="border p-2 rounded w-full mb-3">
+                <button onclick="loginAdmin()"
+                    class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">Kirish</button>
+            </div>
+            <div id="adminPanel" class="hidden">
+                <p class="mb-3 text-green-700 font-bold">Siz admin paneldasiz!</p>
+                <button onclick="clearFaollar()"
+                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Faollarni tozalash</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /*------------------- Bo‘limlarni almashtirish -------------------*/
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        /*------------------- FAOLLAR -------------------*/
+        const faolForm = document.getElementById('faolForm');
+        const faolList = document.getElementById('faolList');
+
+        window.addEventListener('load', () => {
+            const saved = JSON.parse(localStorage.getItem('faollar')) || [];
+            saved.forEach(item => addFaolCard(item.dars, item.ball, item.holat));
+            renderKitoblar(); // kitoblar va darslarni ham load qil
+        });
+
+        faolForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const dars = document.getElementById('darsNomi').value;
+            const ball = document.getElementById('ball').value;
+            const holat = document.getElementById('holat').value;
+            if (dars && ball) {
+                addFaolCard(dars, ball, holat);
+                saveFaollar();
+                faolForm.reset();
+            }
+        });
+
+        function addFaolCard(dars, ball, holat) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-3 rounded shadow flex justify-between items-center';
+            card.innerHTML = `<div contenteditable="true"><p class="font-bold">${dars}</p><p class="text-gray-600">${holat} — ${ball} ball</p></div>
+    <button onclick="removeCard(this)" class="text-red-500 hover:text-red-700">🗑️</button>`;
+            faolList.appendChild(card);
+        }
+
+        function removeCard(btn) {
+            btn.parentElement.remove();
+            saveFaollar();
+        }
+
+        function saveFaollar() {
+            const data = [];
+            faolList.querySelectorAll('div.bg-white').forEach(card => {
+                const texts = card.querySelectorAll('p');
+                data.push({ dars: texts[0].innerText, holat: texts[1].innerText.split(' — ')[0], ball: texts[1].innerText.split(' — ')[1]?.replace(' ball', '') || '' });
+            });
+            localStorage.setItem('faollar', JSON.stringify(data));
+        }
+
+        function clearFaollar() {
+            faolList.innerHTML = '';
+            localStorage.removeItem('faollar');
+        }
+
+        /*------------------- AI / Sun’iy intellekt -------------------*/
+        function sendMessage() {
+            const input = document.getElementById('aiInput');
+            const chat = document.getElementById('chatBox');
+            if (input.value.trim() === '') return;
+            const userMsg = document.createElement('div');
+            userMsg.className = 'text-right mb-2';
+            userMsg.innerHTML = `<span class="bg-blue-700 text-white px-3 py-1 rounded inline-block">${input.value}</span>`;
+            chat.appendChild(userMsg);
+
+            const botMsg = document.createElement('div');
+            botMsg.className = 'text-left mb-2';
+            botMsg.innerHTML = `<span class="bg-gray-300 text-black px-3 py-1 rounded inline-block">Bu savolga javob yoziladi: "${input.value}"</span>`;
+            chat.appendChild(botMsg);
+
+            chat.scrollTop = chat.scrollHeight;
+            input.value = '';
+        }
+
+        /*------------------- TEST -------------------*/
+        const testBox = document.getElementById('testBox');
+        const submitTest = document.getElementById('submitTest');
+        const testData = [
+            { q: "Scratch Nima Qilamiz", opts: ["Robit", "O‘yin", "Rasm"], ans: 1 },
+            { q: "scratchta Ko'rinish Bloklari Nima?", opts: ["Dizayn", "Kod", "Matn"], ans: 0 },
+            { q: "Tadbirlar Nima ishni bajaradi?", opts: ["Tugmaga bosilgnda bir ish sodir boladi", "Backend", "Ikkalasi"], ans: 0 }
+        ];
+
+        testData.forEach((t, i) => {
+            const div = document.createElement('div');
+            div.className = 'mb-3';
+            div.innerHTML = `<p class="font-bold">${i + 1}. ${t.q}</p>`;
+            t.opts.forEach((o, j) => {
+                div.innerHTML += `<label class="block"><input type="radio" name="q${i}" value="${j}" class="mr-2">${o}</label>`;
+            });
+            testBox.appendChild(div);
+        });
+
+        submitTest.addEventListener('click', () => {
+            let score = 0;
+            testData.forEach((t, i) => {
+                const val = document.querySelector(`input[name="q${i}"]:checked`);
+                if (val && parseInt(val.value) === t.ans) score++;
+            });
+            alert(`Siz ${score} ball to‘pladingiz!`);
+            addFaolCard('Test', score, 'Yaxshi');
+            saveFaollar();
+        });
+
+        /*------------------- ADMIN -------------------*/
+        function loginAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === '1234') {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                alert("Admin panelga kirildi!");
+            } else {
+                alert("Parol xato!");
+            }
+        }
+
+        /*------------------- KITOBLAR + DARSLAR -------------------*/
+        const kitobData = [
+            {
+                nom: "Scratch Boshlang‘ich",
+                rasm: "rasmlar/arab-tili.jpg",
+                darslar: [
+                    { raqam: 1, nom: "O‘yin yaratish asoslari", tavsif: "Scratch dasturida o‘yin yaratishni o‘rganamiz" },
+                    { raqam: 2, nom: "Sprite harakatlari", tavsif: "O‘quvchi sprite’larni harakatlantirishni o‘rganadi" },
+                    { raqam: 3, nom: "Ovoz va animatsiya", tavsif: "O‘yinlarga animatsiya va ovoz qo‘shish" }
+                ]
+            },
+            {
+                nom: "Scratch Dasturiy O‘yinlar",
+                rasm: "rasmlar/arab-tili.jpg",
+                darslar: [
+                    { raqam: 1, nom: "O‘yin dizayni", tavsif: "Murakkab o‘yin dizaynini o‘rganamiz" },
+                    { raqam: 2, nom: "Shartlar va sikl", tavsif: "If-else va looplarni Scratchda qo‘llash" },
+                    { raqam: 3, nom: "Ball tizimi", tavsif: "O‘yinlarda ball va natija tizimini yaratish" }
+                ]
+            },
+            {
+                nom: "Html, CSS Asoslari",
+                rasm: "rasmlar/html-css.jpg",
+                darslar: [
+                    { raqam: 1, nom: "O‘yin dizayni", tavsif: "Murakkab o‘yin dizaynini o‘rganamiz" },
+                    { raqam: 2, nom: "Shartlar va sikl", tavsif: "If-else va looplarni Scratchda qo‘llash" },
+                    { raqam: 3, nom: "Ball tizimi", tavsif: "O‘yinlarda ball va natija tizimini yaratish" }
+                ]
+            }
+        ];
+
+        function renderKitoblar() {
+            const kitobGrid = document.getElementById('kitobGrid');
+            const darslarBox = document.getElementById('darslarBox');
+            kitobGrid.innerHTML = '';
+            kitobData.forEach((kitob, i) => {
+                const div = document.createElement('div');
+                div.className = 'cursor-pointer bg-white rounded shadow hover:shadow-lg transition transform hover:-translate-y-1';
+                div.innerHTML = `<img src="${kitob.rasm}" class="rounded-t h-40 w-full object-cover">
+        <div class="p-3"><h3 class="font-bold text-lg">${kitob.nom}</h3></div>`;
+                div.addEventListener('click', () => showDarslar(i));
+                kitobGrid.appendChild(div);
+            });
+            showDarslar(0); // avvaldan birinchi kitobning darslari
+        }
+
+        function showDarslar(index) {
+            const kitob = kitobData[index];
+            let html = `<h2 class="text-2xl font-bold mb-4">${kitob.nom} darslari</h2>`;
+            kitob.darslar.forEach(d => {
+                html += `<div class="mb-2 p-3 border rounded hover:bg-gray-100 cursor-pointer" onclick="alert('${d.nom}\\n\\n${d.tavsif}')">
+        <p class="font-bold">${d.raqam}. ${d.nom}</p>
+        <p class="text-gray-600">${d.tavsif.substring(0, 50)}...</p>
+      </div>`;
+            });
+            document.getElementById('darslarBox').innerHTML = html;
+        }
+
+    </script>
+</body>
+
+</html>
